@@ -5,13 +5,20 @@ import SEForum.seforumbackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-public class UserController implements CommandLineRunner {
+@RestController("/user")
+@CrossOrigin(origins = "*")
+public class UserController implements CommandLineRunner{
+
+    private final UserRepository userrepo;
+
 
     @Autowired
-    private UserRepository repository;
+    public UserController(UserRepository userrepo) {
+        this.userrepo = userrepo;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(UserController.class, args);
@@ -20,16 +27,16 @@ public class UserController implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        repository.deleteAll();
+        userrepo.deleteAll();
 
         // save a couple of customers
-        repository.save(new User("Alice", "Smith"));
-        repository.save(new User("Bob", "Smith"));
+        userrepo.save(new User("Alice", "Smith"));
+        userrepo.save(new User("Bob", "Smith"));
 
         // fetch all customers
         System.out.println("Customers found with findAll():");
         System.out.println("-------------------------------");
-        for (User customer : repository.findAll()) {
+        for (User customer : userrepo.findAll()) {
             System.out.println(customer);
         }
         System.out.println();
@@ -37,11 +44,11 @@ public class UserController implements CommandLineRunner {
         // fetch an individual customer
         System.out.println("Customer found with findByFirstName('Alice'):");
         System.out.println("--------------------------------");
-        System.out.println(repository.findByFirstName("Alice"));
+        System.out.println(userrepo.findByFirstName("Alice"));
 
         System.out.println("Customers found with findByLastName('Smith'):");
         System.out.println("--------------------------------");
-        for (User customer : repository.findByLastName("Smith")) {
+        for (User customer : userrepo.findByLastName("Smith")) {
             System.out.println(customer);
         }
 

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document
 @Getter
@@ -12,8 +13,9 @@ public class User {
 
     @Id
     public String id;
-
+    @Field
     public String firstName;
+    @Field
     public String lastName;
 
     public User() {}
