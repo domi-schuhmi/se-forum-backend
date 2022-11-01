@@ -12,23 +12,26 @@ import java.util.Objects;
 @Document
 @Getter
 @Setter
-public class User {
+public class Like {
 
     @Id
     public int id;
     @Field
-    public String username;
+    public String creationTime;
     @Field
-    public String passwordHash;
+    public User user;
+    @Field
+    public Post post;
     @Field
     public String optional;
 
-    public User() {
+    public Like() {
     }
 
-    public User(String username, String passwordHash, String... optional) {
-        this.username = username;
-        this.passwordHash = passwordHash;
+    public Like(String creationTime, User user, Post post, String... optional) {
+        this.creationTime = creationTime;
+        this.user = user;
+        this.post = post;
         this.optional = optional != null ? Arrays.toString(optional) : "";
     }
 
@@ -36,21 +39,22 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return username.equals(user.username) && passwordHash.equals(user.passwordHash) && Objects.equals(optional, user.optional);
+        Like like = (Like) o;
+        return creationTime.equals(like.creationTime) && user.equals(like.user) && post.equals(like.post) && Objects.equals(optional, like.optional);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, passwordHash, optional);
+        return Objects.hash(creationTime, user, post, optional);
     }
 
     @Override
     public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", username='" + username + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
+        return "Like{" +
+                "id=" + id +
+                ", creationTime='" + creationTime + '\'' +
+                ", user=" + user +
+                ", post=" + post +
                 ", optional='" + optional + '\'' +
                 '}';
     }

@@ -12,38 +12,32 @@ import java.util.Objects;
 @Document
 @Getter
 @Setter
-public class Post {
+public class Comment {
 
     @Id
     public int id;
     @Field
     public String creationTime;
     @Field
-    public String title;
-    @Field
     public String content;
     @Field
     public User user;
     @Field
-    public Comment[] comment;
+    public Post post;
     @Field
-    public Like[] likes;
-    @Field
-    public Dislike[] dislikes;
+    public Comment comment;
     @Field
     public String optional;
 
-    public Post() {
+    public Comment() {
     }
 
-    public Post(String creationTime, String title, String content, User user, Comment[] comment, Like[] likes, Dislike[] dislikes, String... optional) {
+    public Comment(String creationTime, String content, User user, Post post, Comment comment, String... optional) {
         this.creationTime = creationTime;
-        this.title = title;
         this.content = content;
         this.user = user;
+        this.post = post;
         this.comment = comment;
-        this.likes = likes;
-        this.dislikes = dislikes;
         this.optional = optional != null ? Arrays.toString(optional) : "";
     }
 
@@ -51,30 +45,24 @@ public class Post {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Post post = (Post) o;
-        return creationTime.equals(post.creationTime) && title.equals(post.title) && content.equals(post.content) && user.equals(post.user) && Arrays.equals(comment, post.comment) && Arrays.equals(likes, post.likes) && Arrays.equals(dislikes, post.dislikes) && Objects.equals(optional, post.optional);
+        Comment comment1 = (Comment) o;
+        return creationTime.equals(comment1.creationTime) && content.equals(comment1.content) && user.equals(comment1.user) && post.equals(comment1.post) && comment.equals(comment1.comment) && Objects.equals(optional, comment1.optional);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(creationTime, title, content, user);
-        result = 31 * result + Arrays.hashCode(comment);
-        result = 31 * result + Arrays.hashCode(likes);
-        result = 31 * result + Arrays.hashCode(dislikes);
-        return result;
+        return Objects.hash(creationTime, content, user, post, comment, optional);
     }
 
     @Override
     public String toString() {
-        return "Post{" +
+        return "Comment{" +
                 "id=" + id +
                 ", creationTime='" + creationTime + '\'' +
-                ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", user=" + user +
-                ", comment=" + Arrays.toString(comment) +
-                ", likes=" + Arrays.toString(likes) +
-                ", dislikes=" + Arrays.toString(dislikes) +
+                ", post=" + post +
+                ", comment=" + comment +
                 ", optional='" + optional + '\'' +
                 '}';
     }

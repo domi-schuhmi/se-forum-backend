@@ -45,7 +45,7 @@ public class UserController {
             throw new IllegalArgumentException();
         }
         this.logger.info(newUser.toString());
-        if (newUser.id != null) {
+        if (newUser.id != -1) {
             Optional<User> c = userrepo.findById(newUser.id);
             if (c.isPresent()) {
                 return c.get();
