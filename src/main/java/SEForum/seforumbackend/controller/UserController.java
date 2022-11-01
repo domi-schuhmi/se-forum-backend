@@ -9,13 +9,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController()
 @RequestMapping("/user")
 @CrossOrigin(origins = "*")
 public class UserController {
 
+    private static int counter = 0;
     private final UserRepository userrepo;
     private final Logger logger;
 
@@ -46,16 +46,11 @@ public class UserController {
         }
         this.logger.info(newUser.toString());
         if (newUser.id != -1) {
-            Optional<User> c = userrepo.findById(newUser.id);
-            if (c.isPresent()) {
-                return c.get();
-            } else {
-                userrepo.save(newUser);
-                return newUser;
-            }
+            return userrepo.save(newUser);
         } else {
-            userrepo.save(newUser);
-            return newUser;
+            counter++;
+            newUser.id = counter;
+            return userrepo.save(newUser);
         }
     }
 

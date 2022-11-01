@@ -36,7 +36,8 @@ public class Post {
     public Post() {
     }
 
-    public Post(String creationTime, String title, String content, User user, Comment[] comment, Like[] likes, Dislike[] dislikes, String... optional) {
+    public Post(int id, String creationTime, String title, String content, User user, Comment[] comment, Like[] likes, Dislike[] dislikes, String... optional) {
+        this.id = id;
         this.creationTime = creationTime;
         this.title = title;
         this.content = content;
