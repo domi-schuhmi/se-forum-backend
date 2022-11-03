@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import javax.persistence.GeneratedValue;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ import java.util.Objects;
 public class User {
 
     @Id
+    @GeneratedValue
     public int id;
     @Field
     public String username;
