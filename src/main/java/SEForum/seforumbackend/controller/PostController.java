@@ -59,6 +59,12 @@ public class PostController {
         }
     }
 
+    @DeleteMapping("/deleteAll")
+    public void deleteAll() {
+        this.postRepository.deleteAll();
+    }
+
+
     private Post getUser(PostDTO newPost) {
         Optional<User> user = userRepository.findById(newPost.user);
         if (user.isPresent()) {

@@ -26,7 +26,8 @@ public class User {
     public User() {
     }
 
-    public User(String username, String passwordHash, String... optional) {
+    public User(int id, String username, String passwordHash, String... optional) {
+        this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;
         this.optional = optional != null ? Arrays.toString(optional) : "";
