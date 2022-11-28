@@ -23,21 +23,21 @@ public class Comment {
     @Field
     public User user;
     @Field
-    public Post post;
+    public int post;
     @Field
-    public Comment comment;
+    public Comment[] subcomments;
     @Field
     public String optional;
 
     public Comment() {
     }
 
-    public Comment(String creationTime, String content, User user, Post post, Comment comment, String... optional) {
+    public Comment(String creationTime, String content, User user, int post, Comment[] subcomments, String... optional) {
         this.creationTime = creationTime;
         this.content = content;
         this.user = user;
         this.post = post;
-        this.comment = comment;
+        this.subcomments = subcomments;
         this.optional = optional != null ? Arrays.toString(optional) : "";
     }
 
@@ -46,12 +46,12 @@ public class Comment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment1 = (Comment) o;
-        return creationTime.equals(comment1.creationTime) && content.equals(comment1.content) && user.equals(comment1.user) && post.equals(comment1.post) && comment.equals(comment1.comment) && Objects.equals(optional, comment1.optional);
+        return creationTime.equals(comment1.creationTime) && content.equals(comment1.content) && user.equals(comment1.user) && post == comment1.post && subcomments.equals(comment1.subcomments) && Objects.equals(optional, comment1.optional);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(creationTime, content, user, post, comment, optional);
+        return Objects.hash(creationTime, content, user, post, subcomments, optional);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class Comment {
                 ", content='" + content + '\'' +
                 ", user=" + user +
                 ", post=" + post +
-                ", comment=" + comment +
+                ", comment=" + subcomments +
                 ", optional='" + optional + '\'' +
                 '}';
     }

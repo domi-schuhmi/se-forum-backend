@@ -25,7 +25,7 @@ public class Post {
     @Field
     public User user;
     @Field
-    public Comment[] comment;
+    public Comment[] comments;
     @Field
     public Like[] likes;
     @Field
@@ -42,7 +42,7 @@ public class Post {
         this.title = title;
         this.content = content;
         this.user = user;
-        this.comment = comment;
+        this.comments = comment;
         this.likes = likes;
         this.dislikes = dislikes;
         this.optional = optional != null ? Arrays.toString(optional) : "";
@@ -53,13 +53,13 @@ public class Post {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Post post = (Post) o;
-        return creationTime.equals(post.creationTime) && title.equals(post.title) && content.equals(post.content) && user.equals(post.user) && Arrays.equals(comment, post.comment) && Arrays.equals(likes, post.likes) && Arrays.equals(dislikes, post.dislikes) && Objects.equals(optional, post.optional);
+        return creationTime.equals(post.creationTime) && title.equals(post.title) && content.equals(post.content) && user.equals(post.user) && Arrays.equals(comments, post.comments) && Arrays.equals(likes, post.likes) && Arrays.equals(dislikes, post.dislikes) && Objects.equals(optional, post.optional);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(creationTime, title, content, user);
-        result = 31 * result + Arrays.hashCode(comment);
+        result = 31 * result + Arrays.hashCode(comments);
         result = 31 * result + Arrays.hashCode(likes);
         result = 31 * result + Arrays.hashCode(dislikes);
         return result;
@@ -73,7 +73,7 @@ public class Post {
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", user=" + user +
-                ", comment=" + Arrays.toString(comment) +
+                ", comment=" + Arrays.toString(comments) +
                 ", likes=" + Arrays.toString(likes) +
                 ", dislikes=" + Arrays.toString(dislikes) +
                 ", optional='" + optional + '\'' +
