@@ -1,6 +1,8 @@
 package SEForum.seforumbackend.entities;
 
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,12 +12,12 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @Document(collection = "user")
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 public class User {
 
     @Id
-    public int id;
+    public String id;
     @Field
     public String username;
     @Field
@@ -23,36 +25,10 @@ public class User {
     @Field
     public String optional;
 
-    public User() {
-    }
-
-    public User(int id, String username, String passwordHash, String... optional) {
+    public User(String id, String username, String passwordHash, String... optional) {
         this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;
         this.optional = optional != null ? Arrays.toString(optional) : "";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return username.equals(user.username) && passwordHash.equals(user.passwordHash) && Objects.equals(optional, user.optional);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(username, passwordHash, optional);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", username='" + username + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
-                ", optional='" + optional + '\'' +
-                '}';
     }
 }
