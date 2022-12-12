@@ -1,57 +1,97 @@
 package SEForum.seforumbackend.controller;
 
+import SEForum.seforumbackend.entities.Post;
 import SEForum.seforumbackend.entities.User;
+import SEForum.seforumbackend.repositories.PostRepository;
 import SEForum.seforumbackend.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController()
 @RequestMapping("/user")
 @CrossOrigin(origins = "*")
+@Slf4j
 public class UserController {
 
-    private static int counter = 0;
     private final UserRepository userrepo;
-    private final Logger logger;
-
+    private final PostRepository postRepository;
 
     @Autowired
-    public UserController(UserRepository userrepo) {
+    public UserController(UserRepository userrepo, PostRepository postRepository) {
         this.userrepo = userrepo;
-        this.logger = (Logger) LoggerFactory.getLogger(UserController.class);
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(UserController.class, args);
+        this.postRepository = postRepository;
     }
 
     @GetMapping("/all")
     public List<User> getList() {
         List<User> result = userrepo.findAll();
         for (User user : result) {
-            this.logger.info(user.toString());
+            log.info(user.toString());
         }
         return result;
     }
 
+    /**
+     * Adds a new user to the DB
+     */
     @PostMapping("/add")
-    public User getList(@RequestBody User newUser) {
-        if (newUser == null || newUser.username == null || newUser.passwordHash == null) {
-            throw new IllegalArgumentException();
+    public User addUser(@RequestBody User newUser) {
+        if (newUser == null
+                || newUser.username == null
+                || newUser.passwordHash == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User was not valid");
         }
-        this.logger.info(newUser.toString());
-        if (newUser.id != -1) {
-            return userrepo.save(newUser);
-        } else {
-            counter++;
-            newUser.id = counter;
-            return userrepo.save(newUser);
+
+        if (userrepo.findByUsername(newUser.username).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
         }
+
+        log.info(newUser.toString());
+        newUser.setId(UUID.randomUUID().toString());
+        return userrepo.save(newUser);
+    }
+
+    /**
+     * Finds a user by username
+     */
+    @GetMapping("/byUsername")
+    public User getUserByUsername(@RequestParam String username) {
+        var userOptional = userrepo.findByUsername(username);
+        return userOptional.orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    }
+
+    @GetMapping("/{userId}/posts")
+    public List<Post> getPostsOfUser(@PathVariable String userId) {
+
+        // check if user exists
+        Optional<User> userOptional = userrepo.findById(userId);
+        if (userOptional.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist");
+
+        return postRepository.findPostsByUser_Id(userOptional.get().getId());
+    }
+
+    /**
+     * Gets User by userId
+     */
+    @GetMapping("/{userId}")
+    public User getUser(@PathVariable String userId) {
+        // check if user exists
+        Optional<User> userOptional = userrepo.findById(userId);
+        return userOptional.orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
     }
 
     @DeleteMapping("/deleteAll")

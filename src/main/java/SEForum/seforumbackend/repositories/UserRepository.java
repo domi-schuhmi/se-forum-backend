@@ -3,8 +3,11 @@ package SEForum.seforumbackend.repositories;
 import SEForum.seforumbackend.entities.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface UserRepository extends MongoRepository<User, Integer> {
+import java.util.List;
+import java.util.Optional;
+
+public interface UserRepository extends MongoRepository<User, String> {
 //    public User findByPasswordHash(String passwordHash);
 //
-//    public List<User> findByUsername(String username);
+    public Optional<User> findByUsername(String username);
 }
