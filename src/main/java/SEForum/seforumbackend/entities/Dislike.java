@@ -22,14 +22,14 @@ public class Dislike {
     @Field
     public User user;
     @Field
-    public Post post;
+    public String post;
     @Field
     public String optional;
 
     public Dislike() {
     }
 
-    public Dislike(String creationTime, User user, Post post, String... optional) {
+    public Dislike(String creationTime, User user, String post, String... optional) {
         this.creationTime = creationTime;
         this.user = user;
         this.post = post;

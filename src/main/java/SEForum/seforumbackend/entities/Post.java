@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -44,8 +45,8 @@ public class Post {
         this.content = content;
         this.user = user;
         this.comments = comment;
-        this.likes = likes;
-        this.dislikes = dislikes;
+        this.likes = new ArrayList<>();
+        this.dislikes = new ArrayList<>();
         this.optional = optional != null ? Arrays.toString(optional) : "";
     }
 }

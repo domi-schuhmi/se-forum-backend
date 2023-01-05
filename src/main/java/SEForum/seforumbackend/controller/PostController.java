@@ -2,6 +2,7 @@ package SEForum.seforumbackend.controller;
 
 import SEForum.seforumbackend.entities.*;
 import SEForum.seforumbackend.repositories.CommentRepository;
+import SEForum.seforumbackend.repositories.LikeRepository;
 import SEForum.seforumbackend.repositories.PostRepository;
 import SEForum.seforumbackend.repositories.UserRepository;
 import lombok.NonNull;
@@ -27,12 +28,16 @@ public class PostController {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
+
 
     @Autowired
-    public PostController(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository) {
+    public PostController(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, LikeRepository likeRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
+        this.likeRepository = likeRepository;
+
     }
 
     @GetMapping("/all")
@@ -165,6 +170,67 @@ public class PostController {
 //        return postRepository.save(updatedPost);
     }
 
+    @PutMapping("/like")
+    public Post like(@RequestBody Like likeDTO) {
+        var postOptional = postRepository.findById(likeDTO.post);
+        var post = postOptional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post with id " + likeDTO.post + " does not exist"));
+        var like = mapLikeDTOtoLike(likeDTO);
+
+        Like previousLike = null;
+        for (Like l : post.likes ) {
+            if(l.getUser().id.equals(like.getUser().id)) {
+                previousLike = l;
+                break;
+            }
+        }
+
+        for (Dislike dl : post.dislikes ) {
+            if(dl.getUser().id.equals(like.getUser().id)) {
+                post.dislikes.remove(dl);
+                break;
+            }
+        }
+
+        if(previousLike==null) {
+            post.likes.add(like);
+        } else {
+            post.likes.remove(previousLike);
+        }
+        return postRepository.save(post);
+    }
+
+
+
+
+    @PutMapping("/dislike")
+    public Post like(@RequestBody Dislike dislikeDTO) {
+        var postOptional = postRepository.findById(dislikeDTO.post);
+        var post = postOptional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post with id " + dislikeDTO.post + " does not exist"));
+        var dislike = mapDislikeDTOtoLike(dislikeDTO);
+
+        Dislike previousDislike = null;
+        for (Dislike dl : post.dislikes ) {
+            if(dl.getUser().id.equals(dislike.getUser().id)) {
+                previousDislike = dl;
+                break;
+            }
+        }
+
+        for (Like l : post.likes ) {
+            if(l.getUser().id.equals(dislike.getUser().id)) {
+                post.likes.remove(l);
+                break;
+            }
+        }
+
+        if(previousDislike==null) {
+            post.dislikes.add(dislike);
+        } else {
+            post.dislikes.remove(previousDislike);
+        }
+        return postRepository.save(post);
+    }
+
     private Post appendCommentToCommentOrSubComment(@NonNull Post post, @NonNull String commentId, @NonNull Comment commentToAdd) {
 
         log.info("hey");
@@ -245,6 +311,32 @@ public class PostController {
                 postId,
                 List.of(),
                 commentDTO.getOptional());
+    }
+
+    private Like mapLikeDTOtoLike(@NonNull Like like) {
+
+        if (like.getUser() == null) {
+            log.info("user of like is null");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User id of like was missing");
+        }
+        return new Like(
+                Instant.now().toString(),
+                like.user,
+                like.getPost(),
+                like.getOptional());
+    }
+
+    private Dislike mapDislikeDTOtoLike(@NonNull Dislike dislike) {
+
+        if (dislike.getUser() == null) {
+            log.info("user of like is null");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User id of like was missing");
+        }
+        return new Dislike(
+                Instant.now().toString(),
+                dislike.user,
+                dislike.getPost(),
+                dislike.getOptional());
     }
 
     private List<Comment> buildCommentsRecursively(List<CommentDTO> commentsDTO, @NonNull String postId) {

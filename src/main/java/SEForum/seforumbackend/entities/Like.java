@@ -21,14 +21,14 @@ public class Like {
     @Field
     public User user;
     @Field
-    public Post post;
+    public String post;
     @Field
     public String optional;
 
     public Like() {
     }
 
-    public Like(String creationTime, User user, Post post, String... optional) {
+    public Like(String creationTime, User user, String post, String... optional) {
         this.creationTime = creationTime;
         this.user = user;
         this.post = post;
