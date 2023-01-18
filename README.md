@@ -5,7 +5,7 @@
 
 This project constitutes the backend of the SE-FORUM.
 
-> The corresponding frontend project can be found [here](https://github.com/RingoDev/se-forum-frontend).
+> The corresponding frontend project can be found [here](https://github.com/RingoDev/se-forum-frontend) (access required).
 
 ## Configuration
 
